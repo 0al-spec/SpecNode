@@ -5,6 +5,7 @@ metadata:
   title: SpecNode Personal Compute Adapter
   version: 0.1.0
   status: draft
+  license: MIT
   authors:
     - name: 0AL Spec
     - name: Egor Merkushev
