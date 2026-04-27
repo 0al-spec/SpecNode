@@ -1,0 +1,283 @@
+apiVersion: specpm.dev/v0.1
+kind: BoundarySpec
+metadata:
+  id: specnode.core
+  title: SpecNode Personal Compute Adapter
+  version: 0.1.0
+  status: draft
+  authors:
+    - name: 0AL Spec
+    - name: Egor Merkushev
+intent:
+  summary: Provide a personal, policy-bounded compute adapter for SpecGraph and SpecPM typed jobs without exposing user devices as public workers.
+scope:
+  boundedContext: specnode
+  includes:
+    - Define SpecNode as a personal compute adapter for SpecGraph and SpecPM workflows.
+    - Define outbound-only connection from a local node to the service control plane.
+    - Define node pairing and capability registration for local or cloud-owned compute.
+    - Define local provider discovery for Ollama, LM Studio, llama.cpp, and OpenAI-compatible localhost endpoints.
+    - Define a typed job protocol for bounded SpecGraph and SpecPM work.
+    - Define initial SpecGraph extraction job types for file summaries, module intent, capabilities, and graph fragments.
+    - Define initial SpecPM job types for repository inspection, package metadata extraction, package manifest generation, and conformance hints.
+    - Define deny-by-default workspace, shell, network, and LLM tool policy expectations.
+    - Define provenance and usage receipt fields for generated artifacts.
+    - Preserve alignment with future Agent Passport identity, capability, policy, signing, and revocation fields.
+    - Publish DocC documentation for the SpecNode contract.
+    - Deploy generated DocC documentation through GitHub Pages.
+  excludes:
+    - Production runtime implementation.
+    - Public compute marketplace.
+    - Payment, billing, or reward settlement.
+    - Untrusted third-party worker execution.
+    - Inbound network exposure on user devices.
+    - Direct cloud access to local LLM provider endpoints.
+    - Arbitrary prompt execution as job authority.
+    - Remote shell execution.
+    - General-purpose LLM tool execution in the MVP.
+    - Full Agent Passport runtime enforcement in the first MVP.
+    - Trusted execution environment requirement.
+    - Mobile worker mode.
+provides:
+  capabilities:
+    - id: specnode.personal_compute_adapter
+      role: primary
+      summary: Define the local node boundary that lets users contribute compute to their own SpecGraph and SpecPM workflows.
+    - id: specnode.outbound_control_plane_channel
+      role: primary
+      summary: Require the node to open outbound control-plane sessions without inbound access to the user's machine.
+    - id: specnode.node_pairing
+      role: secondary
+      summary: Describe pairing code flow, node registration, runtime metadata, providers, capabilities, and local limits.
+    - id: specnode.local_provider_discovery
+      role: secondary
+      summary: Discover and describe local OpenAI-compatible providers without exposing provider endpoints to the cloud.
+    - id: specnode.typed_job_protocol
+      role: primary
+      summary: Exchange bounded typed jobs with explicit input references, policy, output schema, and resource limits.
+    - id: specnode.specgraph_local_extraction
+      role: secondary
+      summary: Support SpecGraph extraction jobs for summaries, intent, capabilities, and graph fragments.
+    - id: specnode.specpm_package_generation
+      role: secondary
+      summary: Support SpecPM jobs for candidate package metadata, manifests, validation, and conformance hints.
+    - id: specnode.workspace_policy
+      role: primary
+      summary: Treat the job workspace as the default filesystem boundary and reject access outside it.
+    - id: specnode.security_model
+      role: primary
+      summary: Document deny-by-default controls for repository content, shell, network, LLM tools, and artifact validation.
+    - id: specnode.provenance_receipts
+      role: primary
+      summary: Define provenance fields linking generated artifacts to source commit, tool version, provider, policy, prompt set, and hashes.
+    - id: specnode.usage_receipts
+      role: secondary
+      summary: Define user-visible usage receipt fields for provider, model, token counts, duration, cache state, and artifact digest.
+    - id: specnode.agent_passport_alignment
+      role: secondary
+      summary: Preserve protocol fields that can later map to Agent Passport identity, capabilities, signing, and revocation.
+    - id: specnode.documentation.docc_site
+      role: secondary
+      summary: Build a DocC documentation site for SpecNode contracts and architecture boundaries.
+    - id: specnode.docs_pages_deployment
+      role: secondary
+      summary: Publish generated DocC documentation through GitHub Pages static hosting.
+requires:
+  capabilities: []
+interfaces:
+  inbound:
+    - id: control_plane_job_channel
+      kind: http
+      summary: Outbound WSS or equivalent session from SpecNode to a configured SpecGraph or SpecPM control plane.
+      inputs:
+        - name: typed_job_envelope
+          mediaTypes:
+            - application/json
+      outputs:
+        - name: job_response
+          mediaTypes:
+            - application/json
+    - id: cli_target_shape
+      kind: cli
+      summary: Future specnode CLI target shape for pairing, provider listing, model tests, SpecPM builds, and validation.
+      outputs:
+        - name: command_report
+          mediaTypes:
+            - application/json
+            - text/plain
+  outbound:
+    - id: specgraph_artifact
+      kind: file
+      summary: Schema-valid SpecGraph extraction or graph fragment artifact.
+    - id: specpm_package_candidate
+      kind: file
+      summary: Candidate SpecPM package manifest and related package-generation artifacts.
+    - id: provenance_document
+      kind: file
+      summary: Provenance document linking generated artifacts to source, provider, policy, prompt set, and hashes.
+    - id: usage_receipt
+      kind: file
+      summary: Usage receipt containing provider, model, duration, token counts, cache state, and artifact digest.
+    - id: docc_static_site
+      kind: file
+      summary: Static DocC documentation output deployed to GitHub Pages.
+effects:
+  sideEffects:
+    - id: read_workspace_repository
+      kind: filesystem_read
+      summary: Reads repository content only inside a bounded job workspace.
+    - id: write_generated_artifacts
+      kind: filesystem_write
+      summary: Writes structured artifacts, provenance documents, usage receipts, validation reports, and DocC build output.
+    - id: read_local_provider
+      kind: network_read
+      summary: Calls explicitly configured localhost model provider endpoints for approved jobs.
+    - id: control_plane_session
+      kind: network_read
+      summary: Maintains outbound control-plane communication for pairing, job leasing, policy delivery, and artifact upload.
+    - id: no_remote_shell
+      kind: unknown
+      summary: Remote jobs are typed data and must not be interpreted as shell authority.
+constraints:
+  - id: outbound_only
+    level: MUST
+    statement: SpecNode must initiate outbound connections to the control plane and must not require inbound access to a user's machine.
+  - id: typed_jobs_only
+    level: MUST
+    statement: Jobs must be typed protocol messages with explicit policy and output schema, not arbitrary prompts.
+  - id: repository_content_untrusted
+    level: MUST
+    statement: Repository content must be treated as untrusted data and must not override host policy.
+  - id: llm_output_untrusted
+    level: MUST
+    statement: LLM output must not directly invoke shell commands, access files, call network tools, or alter provenance.
+  - id: workspace_boundary
+    level: MUST
+    statement: The job workspace is the default filesystem boundary for repository content and generated artifacts.
+  - id: local_provider_not_remote_authority
+    level: MUST
+    statement: Local provider endpoints are local configuration and must not be exposed as direct cloud-accessible services.
+  - id: artifact_validation_required
+    level: MUST
+    statement: Generated artifacts must pass declared schema validation before acceptance or upload.
+  - id: provenance_required
+    level: MUST
+    statement: Accepted artifacts must be traceable to source commit, tool version, provider, policy, prompt set, and content hashes.
+evidence:
+  - id: license
+    kind: documentation
+    path: LICENSE
+    supports:
+      - metadata.license
+  - id: readme
+    kind: documentation
+    path: README.md
+    supports:
+      - intent.summary
+      - provides.capabilities
+      - interfaces.inbound
+  - id: constitution
+    kind: documentation
+    path: CONSTITUTION.md
+    supports:
+      - scope.includes
+      - scope.excludes
+      - constraints
+  - id: personal_compute_adapter_proposal
+    kind: adr
+    path: docs/proposals/0001_personal_compute_adapter.md
+    supports:
+      - specnode.personal_compute_adapter
+      - specnode.outbound_control_plane_channel
+      - specnode.specgraph_local_extraction
+      - specnode.specpm_package_generation
+  - id: roadmap
+    kind: documentation
+    path: docs/ROADMAP.md
+    supports:
+      - scope.includes
+      - specnode.specgraph_local_extraction
+      - specnode.specpm_package_generation
+  - id: handoff
+    kind: documentation
+    path: docs/HANDOFF.md
+    supports:
+      - scope.includes
+      - provides.capabilities
+  - id: job_protocol
+    kind: schema
+    path: specs/JOB_PROTOCOL.md
+    supports:
+      - specnode.typed_job_protocol
+      - specnode.node_pairing
+      - interfaces.inbound
+  - id: security_model
+    kind: documentation
+    path: specs/SECURITY_MODEL.md
+    supports:
+      - specnode.security_model
+      - specnode.workspace_policy
+      - constraints
+  - id: provenance_receipts
+    kind: schema
+    path: specs/PROVENANCE_RECEIPTS.md
+    supports:
+      - specnode.provenance_receipts
+      - specnode.usage_receipts
+      - interfaces.outbound
+  - id: docc_overview
+    kind: documentation
+    path: Sources/SpecNode/Documentation.docc/SpecNode.md
+    supports:
+      - specnode.documentation.docc_site
+  - id: docs_pages_workflow
+    kind: source
+    path: .github/workflows/docs.yml
+    supports:
+      - specnode.documentation.docc_site
+      - specnode.docs_pages_deployment
+implementationBindings:
+  - id: protocol_specs
+    path: specs/JOB_PROTOCOL.md
+    files:
+      owned:
+        - specs/JOB_PROTOCOL.md
+        - specs/SECURITY_MODEL.md
+        - specs/PROVENANCE_RECEIPTS.md
+      border:
+        - README.md
+        - CONSTITUTION.md
+        - docs/proposals/0001_personal_compute_adapter.md
+  - id: docc
+    path: Sources/SpecNode/Documentation.docc/SpecNode.md
+    files:
+      owned:
+        - Sources/SpecNode/Documentation.docc/SpecNode.md
+        - Sources/SpecNode/Documentation.docc/GettingStarted.md
+        - Sources/SpecNode/Documentation.docc/JobProtocol.md
+        - Sources/SpecNode/Documentation.docc/SecurityModel.md
+        - Sources/SpecNode/Documentation.docc/ProvenanceReceipts.md
+        - Sources/SpecNode/Documentation.docc/SpecGraphSpecPMIntegration.md
+        - Sources/SpecNode/Documentation.docc/Roadmap.md
+        - .github/workflows/docs.yml
+        - Package.swift
+        - Makefile
+provenance:
+  sourceConfidence:
+    intent: high
+    boundary: high
+    behavior: medium
+keywords:
+  - specnode
+  - personal-compute
+  - typed-jobs
+  - local-llm
+  - provenance
+  - specgraph
+  - specpm
+compatibility:
+  platforms:
+    - any
+  languages:
+    - markdown
+    - swift

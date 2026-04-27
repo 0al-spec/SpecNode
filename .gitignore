@@ -27,7 +27,9 @@ pnpm-debug.log*
 yarn-debug.log*
 
 # Build artifacts
+.build/
 build/
 dist/
 target/
 coverage/
+.docc-build/
