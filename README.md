@@ -18,6 +18,20 @@ The first implementation target is a local CLI or daemon that connects to a
 SpecGraph/SpecPM control plane through an outbound job channel and executes a
 small allowlisted set of typed jobs.
 
+## Documentation
+
+DocC documentation is published through GitHub Pages at:
+
+```text
+https://0al-spec.github.io/SpecNode/
+```
+
+Build the static documentation locally:
+
+```bash
+make docs-build
+```
+
 ## Core Idea
 
 ```text
@@ -67,6 +81,7 @@ specnode specpm validate ./dist/spec-package.yaml
 ## Repository Layout
 
 ```text
+specpm.yaml          SpecPM package manifest for SpecNode itself.
 docs/
   proposals/          Product and architecture proposals.
 specs/                Protocol, security, and artifact contracts.

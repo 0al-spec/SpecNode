@@ -1,0 +1,46 @@
+apiVersion: specpm.dev/v0.1
+kind: SpecPackage
+metadata:
+  id: specnode.core
+  name: SpecNode
+  version: 0.1.0
+  summary: Personal compute adapter for SpecGraph and SpecPM typed jobs.
+  license: MIT
+  authors:
+    - name: 0AL Spec
+    - name: Egor Merkushev
+specs:
+  - path: specs/specnode.spec.yaml
+index:
+  provides:
+    capabilities:
+      - specnode.personal_compute_adapter
+      - specnode.outbound_control_plane_channel
+      - specnode.node_pairing
+      - specnode.local_provider_discovery
+      - specnode.typed_job_protocol
+      - specnode.specgraph_local_extraction
+      - specnode.specpm_package_generation
+      - specnode.workspace_policy
+      - specnode.security_model
+      - specnode.provenance_receipts
+      - specnode.usage_receipts
+      - specnode.agent_passport_alignment
+      - specnode.documentation.docc_site
+      - specnode.docs_pages_deployment
+  requires:
+    capabilities: []
+compatibility:
+  platforms:
+    - any
+  languages:
+    - markdown
+    - swift
+keywords:
+  - specnode
+  - specgraph
+  - specpm
+  - personal-compute
+  - typed-jobs
+  - provenance
+foreignArtifacts: []
