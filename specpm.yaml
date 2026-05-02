@@ -28,6 +28,21 @@ index:
       - specnode.agent_passport_alignment
       - specnode.documentation.docc_site
       - specnode.docs_pages_deployment
+    intents:
+      - intent.personal_compute.adapter
+      - intent.control_plane.outbound_channel
+      - intent.node_identity.pairing
+      - intent.llm.local_provider_discovery
+      - intent.job_protocol.typed_jobs
+      - intent.specification_graph.local_extraction
+      - intent.specification.package_generation
+      - intent.security.workspace_policy
+      - intent.security.deny_by_default_execution
+      - intent.provenance.artifact_receipts
+      - intent.usage.receipts
+      - intent.agent_identity.passport_alignment
+      - intent.documentation.docc_site
+      - intent.documentation.github_pages_deployment
   requires:
     capabilities: []
 compatibility:
