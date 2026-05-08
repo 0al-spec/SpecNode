@@ -44,45 +44,73 @@ provides:
     - id: specnode.personal_compute_adapter
       role: primary
       summary: Define the local node boundary that lets users contribute compute to their own SpecGraph and SpecPM workflows.
+      intentIds:
+        - intent.personal_compute.adapter
     - id: specnode.outbound_control_plane_channel
       role: primary
       summary: Require the node to open outbound control-plane sessions without inbound access to the user's machine.
+      intentIds:
+        - intent.control_plane.outbound_channel
     - id: specnode.node_pairing
       role: secondary
       summary: Describe pairing code flow, node registration, runtime metadata, providers, capabilities, and local limits.
+      intentIds:
+        - intent.node_identity.pairing
     - id: specnode.local_provider_discovery
       role: secondary
       summary: Discover and describe local OpenAI-compatible providers without exposing provider endpoints to the cloud.
+      intentIds:
+        - intent.llm.local_provider_discovery
     - id: specnode.typed_job_protocol
       role: primary
       summary: Exchange bounded typed jobs with explicit input references, policy, output schema, and resource limits.
+      intentIds:
+        - intent.job_protocol.typed_jobs
     - id: specnode.specgraph_local_extraction
       role: secondary
       summary: Support SpecGraph extraction jobs for summaries, intent, capabilities, and graph fragments.
+      intentIds:
+        - intent.specification_graph.local_extraction
     - id: specnode.specpm_package_generation
       role: secondary
       summary: Support SpecPM jobs for candidate package metadata, manifests, validation, and conformance hints.
+      intentIds:
+        - intent.specification.package_generation
     - id: specnode.workspace_policy
       role: primary
       summary: Treat the job workspace as the default filesystem boundary and reject access outside it.
+      intentIds:
+        - intent.security.workspace_policy
     - id: specnode.security_model
       role: primary
       summary: Document deny-by-default controls for repository content, shell, network, LLM tools, and artifact validation.
+      intentIds:
+        - intent.security.deny_by_default_execution
     - id: specnode.provenance_receipts
       role: primary
       summary: Define provenance fields linking generated artifacts to source commit, tool version, provider, policy, prompt set, and hashes.
+      intentIds:
+        - intent.provenance.artifact_receipts
     - id: specnode.usage_receipts
       role: secondary
       summary: Define user-visible usage receipt fields for provider, model, token counts, duration, cache state, and artifact digest.
+      intentIds:
+        - intent.usage.receipts
     - id: specnode.agent_passport_alignment
       role: secondary
       summary: Preserve protocol fields that can later map to Agent Passport identity, capabilities, signing, and revocation.
+      intentIds:
+        - intent.agent_identity.passport_alignment
     - id: specnode.documentation.docc_site
       role: secondary
       summary: Build a DocC documentation site for SpecNode contracts and architecture boundaries.
+      intentIds:
+        - intent.documentation.docc_site
     - id: specnode.docs_pages_deployment
       role: secondary
       summary: Publish generated DocC documentation through GitHub Pages static hosting.
+      intentIds:
+        - intent.documentation.github_pages_deployment
 requires:
   capabilities: []
 interfaces:
